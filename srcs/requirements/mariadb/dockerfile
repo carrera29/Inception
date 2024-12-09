@@ -8,7 +8,7 @@ RUN apk add --no-cache mariadb mariadb-client
 RUN mkdir -p /var/lib/mysql /run/mysqld
 
 # Copiamos el archivo de configuración de MariaDB
-COPY conf/my.conf /etc/my.cnf
+COPY conf/my.cnf /etc/my.cnf
 
 # Establecemos los permisos correctos
 RUN chown -R mysql:mysql /var/lib/mysql /run/mysqld

@@ -1,7 +1,7 @@
 # Imagen base de NGINX
 FROM nginx:alpine
 
-# Instalamos openssl para manejar TLS
+# Instalamos la instalación de paquetes de Alpine. No instala Nginx porque ya está incluido en la imagen nginx:alpine.
 RUN apk --no-cache add openssl
 
 # Copiamos el archivo de configuración de NGINX
@@ -13,5 +13,5 @@ COPY ./certs/ /etc/ssl/certs/
 # Exponemos el puerto 443 para HTTPS
 EXPOSE 443
 
-# El punto de entrada es el servidor NGINX con los certificados TLS
+# El contenedor permanecerá activo mientras Nginx esté funcionando.
 ENTRYPOINT ["nginx", "-g", "daemon off;"]

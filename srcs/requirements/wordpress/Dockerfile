@@ -35,6 +35,6 @@ COPY conf/php-fpm.conf /etc/php7/php-fpm.conf
 # Exponemos el puerto 9000
 EXPOSE 9000
 
-# Iniciamos PHP-FPM
+# Iniciamos PHP-FPM en modo foreground (sin daemonizar)
 CMD ["php-fpm7", "-F"]
 

@@ -1,56 +1,62 @@
 version: '3'
 
 services:
+
   nginx:
-    build:
-      context: ./requirements/nginx # llama a dockerfile con las reglas para generar el contenedor nginx
+
     container_name: nginx
+    build: ./requirements/nginx/. # llama a dockerfile con las reglas para generar el contenedor nginx
     ports:
       - "443:443"
+    depends_on:
+      - wordpress #Asegura que los contenedores se inicialicen en un orden
     volumes: #Asocia una ubicación del sistema de archivos local con una ubicación dentro de un contenedor.
       - ./data/nginx:/etc/nginx # Mapea la carpeta local al directorio de configuración de Nginx dentro del contenedor
       - ./data/wordpress:/var/www/html # Mapea los archivos de WordPress a la carpeta del servidor web
     networks:
       - backend # Conecta el servicio nginx a la red llamada "backend" para comunicar con otros contenedores
+    env_file:
+      - .env
     restart: always # configura el reinicio automático si la MV se detiene o la MV se reinicia
 
+
   wordpress:
-    build:
-      context: ./requirements/wordpress
+
     container_name: wordpress
-    environment: # Define las variables de entorno que WordPress necesitará para conectarse a la base de datos de MariaDB.
-      WORDPRESS_DB_HOST: mariadb:3306 # debe conectarse al servicio mariadb en el puerto 3306
-      WORDPRESS_DB_NAME: ${MYSQL_DB} # Estas variables de entorno se definen en el archivo .env
-      WORDPRESS_DB_USER: ${MYSQL_USER}
-      WORDPRESS_DB_PASSWORD: ${MYSQL_PASSWORD}
+    build: ./requirements/wordpress/.
+    depends_on:
+      - mariadb
     volumes:
       - wordpress_data:/var/www/html # se configura el volumen para almacenar los archivos de WordPress
+    env_file:
+      - .env
     networks:
       - backend
     restart: always
 
+
   mariadb:
-    build:
-      context: ./requirements/mariadb
+
     container_name: mariadb
-    environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      MYSQL_USER: ${MYSQL_USER}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
-      MYSQL_DATABASE: ${MYSQL_DB}
+    build: ./requirements/mariadb
     volumes:
       - mariadb_data:/var/lib/mysql
+    env_file:
+      - .env
     networks:
       - backend
     restart: always
 
 
 # Definimos dos volúmenes persistentes para WordPress y MariaDB
-# Asegura que los datos de WordPress y MariaDB se conserven si los contenedores se detienen o eliminan
+# Asegura que los datos de WordPress y MariaDB se conserven si los contenedores se detienen o eliminan.
+# Al no especificar una ruta específica en local, Docker crea volúmenes anónimos en su propia infraestructura
 
 volumes:
+
   wordpress_data:
     driver: local
+  
   mariadb_data:
     driver: local
 
