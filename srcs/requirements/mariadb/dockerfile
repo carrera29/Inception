@@ -1,0 +1,19 @@
+# Usamos Alpine Linux como base
+FROM alpine:3.15
+
+# Instalamos MariaDB
+RUN apk add --no-cache mariadb mariadb-client
+
+# Creamos los directorios necesarios
+RUN mkdir -p /var/lib/mysql /run/mysqld
+
+# Copiamos el archivo de configuración de MariaDB
+COPY conf/my.conf /etc/my.cnf
+
+# Establecemos los permisos correctos
+RUN chown -R mysql:mysql /var/lib/mysql /run/mysqld
+
+# Iniciamos MariaDB
+CMD ["mysqld_safe"]
+
+EXPOSE 3306
