@@ -22,6 +22,10 @@ destroy:
 	@echo "Eliminando contenedores, volúmenes y huérfanos..."
 	docker-compose -f $(DOCKER_COMPOSE) down --volumes --remove-orphans
 
+ps:
+	@echo "Mostrando los contenedores..."
+	docker-compose -f $(DOCKER_COMPOSE) ps
+
 logs:
 	@echo "Mostrando logs de los contenedores..."
 	docker-compose -f $(DOCKER_COMPOSE) logs
@@ -33,6 +37,7 @@ exec_nginx:
 clean:
 	@echo "Limpiando imágenes y contenedores..."
 	docker-compose -f $(DOCKER_COMPOSE) down --rmi all --volumes --remove-orphans
+	rm -rf /etc/nginx/ssl/*
 
 prune_volumes:
 	@echo "Eliminando volúmenes persistentes..."
@@ -47,10 +52,10 @@ help:
 	@echo -e "\033[1;34mMakefile para gestionar los contenedores Docker\033[0m"
 	@echo ""
 	@echo -e "\033[1;32mUso:\033[0m"
-	@echo "  make build         Construye las imágenes"
 	@echo "  make up            Levanta los contenedores en segundo plano"
 	@echo "  make down          Detiene los contenedores"
 	@echo "  make destroy       Detiene y elimina contenedores y volúmenes"
+	@echo "  make ps          	Muestra los contenedores"
 	@echo "  make logs          Muestra los logs de los contenedores"
 	@echo "  make exec_nginx    Ejecuta un bash dentro del contenedor nginx"
 	@echo "  make clean         Elimina todas las imágenes y contenedores"

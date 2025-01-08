@@ -5,13 +5,12 @@ FROM nginx:alpine
 RUN apk --no-cache add openssl
 
 # Copiamos el archivo de configuración de NGINX
-COPY ./conf/nginx.conf /etc/nginx/nginx.conf
+RUN mkdir /etc/nginx/conf
+COPY ./conf/nginx.conf /etc/nginx/conf/nginx.conf
 
-# Copiamos certificados TLS
-COPY ./certs/ /etc/ssl/certs/
-
-# Exponemos el puerto 443 para HTTPS
-EXPOSE 443
+# Copia el script de generación del certificado
+COPY ./conf/generate_cert.sh /usr/local/bin/generate_cert.sh
+RUN chmod +x /usr/local/bin/generate_cert.sh
 
 # El contenedor permanecerá activo mientras Nginx esté funcionando.
 ENTRYPOINT ["nginx", "-g", "daemon off;"]

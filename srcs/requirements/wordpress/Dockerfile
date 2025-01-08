@@ -3,20 +3,20 @@ FROM alpine:3.15
 
 # Instalamos PHP y extensiones necesarias
 RUN apk add --no-cache \
-    php7 \
-    php7-fpm \
-    php7-mysqli \
-    php7-json \
-    php7-curl \
-    php7-mbstring \
-    php7-xml \
-    php7-session \
-    php7-opcache \
-    php7-gd \
-    php7-zip \
-    php7-phar \
-    php7-dom \
-    php7-simplexml \
+    php8 \
+    php8-fpm \
+    php8-mysqli \
+    php8-json \
+    php8-curl \
+    php8-mbstring \
+    php8-xml \
+    php8-session \
+    php8-opcache \
+    php8-gd \
+    php8-zip \
+    php8-phar \
+    php8-dom \
+    php8-simplexml \
     wget
 
 # Descargamos WordPress
@@ -30,11 +30,12 @@ RUN mkdir -p /var/www/html && \
     rm -rf wordpress
 
 # Copiamos el archivo de configuración de PHP-FPM
-COPY conf/php-fpm.conf /etc/php7/php-fpm.conf
+RUN mkdir /etc/php8/conf
+COPY ./conf/php-fpm.conf /etc/php8/conf/php-fpm.conf
 
 # Exponemos el puerto 9000
 EXPOSE 9000
 
 # Iniciamos PHP-FPM en modo foreground (sin daemonizar)
-CMD ["php-fpm7", "-F"]
+CMD ["php-fpm8", "-F"]
 
