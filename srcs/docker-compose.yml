@@ -1,67 +1,53 @@
+# docker-compose.yml
+version: '3.8'
+
 services:
-
-  nginx:
-    container_name: nginx
-    build: ./requirements/nginx/. # llama a dockerfile con las reglas para generar el contenedor nginx
-    ports:
-      - 443:443
-    depends_on:
-      - wordpress #Asegura que los contenedores se inicialicen en un orden
-    volumes: #Asocia una ubicación del sistema de archivos local con una ubicación dentro de un contenedor.
-      - wordpress:/var/www/html # Mapea los archivos de WordPress a la carpeta del servidor web
+  mariadb:
+    container_name: mariadb
+    build: ./requirements/mariadb
+    restart: always
+    env_file: .env
     networks:
-      - backend # Conecta el servicio nginx a la red llamada "backend" para comunicar con otros contenedores
-    env_file:
-      - .env
-    restart: always # configura el reinicio automático si la MV se detiene o la MV se reinicia
-
+      - my_network
+    volumes:
+      - mariadb_data:/var/lib/mysql
+    ports:
+      - "3306:3306"
 
   wordpress:
     container_name: wordpress
-    build: ./requirements/wordpress/.
+    build: ./requirements/wordpress
+    restart: always
+    env_file: .env
     depends_on:
       - mariadb
-    volumes:
-      - wordpress:/var/www/html # se configura el volumen para almacenar los archivos de WordPress
-    env_file:
-      - .env
     networks:
-      - backend
-    restart: always
-
-
-  mariadb:
-    container_name: mariadb
-    build: ./requirements/mariadb/.
+      - my_network
     volumes:
-      - mariadb:/var/lib/mysql
-    env_file:
-      - .env
-    networks:
-      - backend
+      - wordpress_data:/var/www/html
+    ports:
+      - "9000:9000"
+
+  nginx:
+    container_name: nginx
+    build: ./requirements/nginx
     restart: always
+    depends_on:
+      - wordpress
+    networks:
+      - my_network
+    volumes:
+      - wordpress_data:/var/www/html
+    ports:
+      - "443:443"
 
-
-# Definimos dos volúmenes persistentes para WordPress y MariaDB.
-# Asegura que los datos de WordPress y MariaDB se conserven si los contenedores se detienen o eliminan.
-# Al no especificar una ruta específica en local, Docker crea volúmenes anónimos en su propia infraestructura.
-volumes:
-  wordpress:
-    driver: local # Se utiliza el controlador de volumen local para almacenar los datos en el sistema de archivos local.
-    driver_opts:
-      type: none # Se especifica que el controlador de volumen local no es un controlador de volumen de Docker.
-      device: $HOST_DATA_PATH/wordpress # Se especifica la ubicación del sistema de archivos local donde se almacenarán los datos.
-      o: bind # Se especifica que los datos se almacenan en la ubicación del sistema de archivos local.
-  
-  mariadb:
-    driver: local
-    driver_opts:
-      type: none
-      device: $HOST_DATA_PATH/mariadb
-      o: bind
-
-
-# Configuración de la red para que los contenedores se comuniquen entre sí sin depender de la red externa del host.
 networks:
-  backend: # Se crea una red llamada "backend" para conectar los contenedores de WordPress, MariaDB y Nginx.
-    driver: bridge # Se especifica el controlador de red de puente para conectar los contenedores en la red "backend".
+  my_network:
+    driver: bridge
+
+volumes:
+  mariadb_data:
+    driver: local
+  wordpress_data:
+    driver: local
+
