@@ -17,6 +17,8 @@ services:
     build: ./requirements/wordpress/.
     volumes:
       - ./web:/var/www/html
+    env_file:
+      - .env
     depends_on:
       - mariadb
     networks:
@@ -27,6 +29,8 @@ services:
     build: ./requirements/mariadb/.
     volumes:
       - ./database:/var/lib/mysql
+    env_file:
+      - .env
     networks:
       - inception
 

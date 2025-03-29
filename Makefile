@@ -37,15 +37,14 @@ exec_nginx:
 clean:
 	@echo "Limpiando imágenes y contenedores..."
 	docker-compose -f $(DOCKER_COMPOSE) down --rmi all --volumes --remove-orphans
-	rm -rf /etc/nginx/ssl/*
+	rm -rf ./srcs/web ./srcs/database
 
 prune_volumes:
 	@echo "Eliminando volúmenes persistentes..."
 	docker volume prune -f
 
-restart:
+re: clean
 	@echo "Reiniciando los contenedores..."
-	docker-compose -f $(DOCKER_COMPOSE) down
 	docker-compose -f $(DOCKER_COMPOSE) up -d
 
 help:
