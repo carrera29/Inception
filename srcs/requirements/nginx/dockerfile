@@ -1,0 +1,10 @@
+FROM debian:latest
+
+# Update package list, install nginx, and clean up
+RUN apt-get update && apt-get install -y \
+    nginx
+
+COPY default /etc/nginx/sites-available/.
+    
+# Set the default command to run nginx in the foreground
+CMD ["nginx", "-g", "daemon off;"]
