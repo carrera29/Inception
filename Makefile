@@ -8,11 +8,11 @@ all: up
 
 up:
 	@echo "Levantando los contenedores..."
-	docker-compose -f $(DOCKER_COMPOSE) up -d
+	docker-compose -f $(DOCKER_COMPOSE) up --build -d --remove-orphans
 
 down:
 	@echo "Deteniendo los contenedores..."
-	docker-compose -f $(DOCKER_COMPOSE) down
+	docker-compose -f $(DOCKER_COMPOSE) down -v
 
 stop:
 	@echo "Deteniendo los contenedores..."
