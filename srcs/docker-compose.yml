@@ -3,32 +3,39 @@ services:
     container_name: nginx
     build: ./requirements/nginx/.
     ports:
-      - "80:80"
+      - "443:443"
     volumes:
-      - ./web:/var/www/html
+      - ./data/wordpress:/var/www/html
     depends_on:
       - wordpress
       - mariadb
     networks:
       - inception
+    # env_file:
+    #   - .env
+    # environment:
+    #   - DOMAIN_NAME=${DOMAIN_NAME}
+    restart: always
 
   wordpress:
     container_name: wp-php
     build: ./requirements/wordpress/.
     volumes:
-      - ./web:/var/www/html
+      - ./data/wordpress:/var/www/html
     depends_on:
       - mariadb
     networks:
       - inception
+    restart: always
 
   mariadb:
     container_name: mariadb
     build: ./requirements/mariadb/.
     volumes:
-      - ./database:/var/lib/mysql
+      - ./data/mariadb:/var/lib/mysql
     networks:
       - inception
+    restart: always
 
 networks:
   inception:

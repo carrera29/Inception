@@ -1,16 +1,20 @@
-FROM debian:latest
+FROM debian:12
 
 # Actualizar e instalar mariadb-server
 RUN apt-get update && \
-    apt-get upgrade -y && \
-    apt-get install -y mariadb-server
+    apt-get install -y mariadb-server && \
+    rm -rf /var/lib/apt/lists/*
 
-COPY 50-server.cnf /etc/mysql/mariadb.conf.d/.
+# Copia la configuración personalizada y scripts de inicialización
+COPY 50-server.cnf /etc/mysql/mariadb.conf.d/
 COPY init.sql /etc/mysql/init.sql
+COPY script.sh /usr/local/bin/script.sh
+RUN chmod +x /usr/local/bin/script.sh
 
-COPY script.sh .
-RUN chmod +x script.sh
+# Crea el directorio de runtime con permisos adecuados
+RUN mkdir -p /run/mysqld && chown -R mysql:mysql /run/mysqld
 
-RUN mkdir /run/mysqld
+# Expone el puerto por defecto de MariaDB
+EXPOSE 3306
 
-CMD ["./script.sh"]
+CMD ["/usr/local/bin/script.sh"]

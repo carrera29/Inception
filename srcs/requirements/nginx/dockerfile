@@ -1,10 +1,12 @@
-FROM debian:latest
+FROM debian:12
 
-# Update package list, install nginx, and clean up
 RUN apt-get update && apt-get install -y \
-    nginx
+    nginx \
+    openssl \
+    && apt-get clean
 
-COPY default /etc/nginx/sites-available/.
-    
-# Set the default command to run nginx in the foreground
-CMD ["nginx", "-g", "daemon off;"]
+COPY default /etc/nginx/sites-available/default
+COPY script.sh .
+RUN chmod +x script.sh
+
+CMD ["/script.sh"]

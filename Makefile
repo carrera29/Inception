@@ -1,9 +1,9 @@
-SERVICES = nginx wordpress mariadb
+SERVICES = nginx wordpwp-php mariadb
 
-# Ruta al archivo docker-compose
 DOCKER_COMPOSE = srcs/docker-compose.yml
 
-# Comandos básicos
+
+
 all: up
 
 up:
@@ -16,7 +16,7 @@ down:
 
 stop:
 	@echo "Deteniendo los contenedores..."
-	@docker-compose -f $(COMPOSE_FILE) stop
+	@docker-compose -f $(DOCKER_COMPOSE) stop
 
 destroy:
 	@echo "Eliminando contenedores, volúmenes y huérfanos..."
@@ -34,10 +34,17 @@ exec_nginx:
 	@echo "Abriendo bash en el contenedor nginx..."
 	docker-compose -f $(DOCKER_COMPOSE) exec nginx bash
 
+exec_wp:
+	docker-compose -f $(DOCKER_COMPOSE) exec wp-php bash
+
+exec_mariadb:
+	docker-compose -f $(DOCKER_COMPOSE) exec mariadb bash
+
 clean:
 	@echo "Limpiando imágenes y contenedores..."
 	docker-compose -f $(DOCKER_COMPOSE) down --rmi all --volumes --remove-orphans
 	rm -rf /etc/nginx/ssl/*
+	rm -rf ./srcs/web ./srcs/data
 
 prune_volumes:
 	@echo "Eliminando volúmenes persistentes..."
