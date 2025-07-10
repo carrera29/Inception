@@ -1,49 +1,94 @@
 services:
   nginx:
+    build: requirements/nginx
     container_name: nginx
-    build: ./requirements/nginx/.
-    ports:
-      - "443:443"
-    volumes:
-      - ./data/wordpress:/var/www/html
+    image: nginx:tar
+    env_file:
+      - .env
     depends_on:
       - wordpress
-      - mariadb
-    networks:
-      - inception
-    # env_file:
-    #   - .env
-    # environment:
-    #   - DOMAIN_NAME=${DOMAIN_NAME}
-    restart: always
-
-  wordpress:
-    container_name: wp-php
-    build: ./requirements/wordpress/.
+    ports:
+      - target: 443
+        published: 443
     volumes:
-      - ./data/wordpress:/var/www/html
-    depends_on:
-      - mariadb
+      - wordpress:/var/www/html
     networks:
       - inception
-    restart: always
+    restart:
+      on-failure
 
   mariadb:
+    build: requirements/mariadb
     container_name: mariadb
-    build: ./requirements/mariadb/.
+    image: mariadb:tar
+    env_file:
+      - .env
+    secrets:
+      - db_root_password
+      - db_password
+      - db_credentials
+    environment:
+      MYSQL_CREDENTIALS_FILE: /run/secrets/db_credentials
+      MYSQL_ROOT_PASSWORD_FILE: /run/secrets/db_root_password
+      MYSQL_PASSWORD_FILE: /run/secrets/db_password
     volumes:
-      - ./data/mariadb:/var/lib/mysql
+      - db:/var/lib/mysql
     networks:
       - inception
-    restart: always
+    restart:
+      on-failure
+
+  wordpress:
+    build: requirements/wordpress
+    container_name: wordpress
+    image: wordpress:tar
+    env_file:
+      - .env
+    secrets:
+      - db_root_password
+      - db_password
+      - wp_password
+      - wp_root_password
+      - wp_credentials
+      - db_credentials
+    environment:
+      MYSQL_CREDENTIALS_FILE: /run/secrets/db_credentials
+      WP_CREDENTIALS_FILE: /run/secrets/wp_credentials
+      MYSQL_ROOT_PASSWORD_FILE: /run/secrets/db_root_password
+      MYSQL_PASSWORD_FILE: /run/secrets/db_password
+      WP_ROOT_PASSWORD_FILE: /run/secrets/wp_root_password
+      WP_USER_PASSWORD_FILE: /run/secrets/wp_password
+    depends_on:
+      - mariadb
+    volumes:
+      - wordpress:/var/www/html
+    networks:
+      - inception
+    restart:
+      on-failure
 
 networks:
   inception:
     driver: bridge
 
 volumes:
-  mariadb_data:
+  db:
+    name: db
     driver: local
-  wordpress_data:
+  wordpress:
+    name: wordpress
     driver: local
 
+secrets:
+  db_password:
+    file: ../secrets/db_password.txt
+  db_root_password:
+    file: ../secrets/db_root_password.txt
+  wp_password:
+    file: ../secrets/wp_password.txt
+  wp_root_password:
+    file: ../secrets/wp_root_password.txt
+  wp_credentials:
+    file: ../secrets/wp_credentials.txt
+  db_credentials:
+    file: ../secrets/db_credentials.txt

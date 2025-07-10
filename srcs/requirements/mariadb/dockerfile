@@ -1,20 +1,9 @@
-FROM debian:12
+FROM debian:bullseye
 
-# Actualizar e instalar mariadb-server
-RUN apt-get update && \
-    apt-get install -y mariadb-server && \
-    rm -rf /var/lib/apt/lists/*
+RUN apt-get update -y && apt-get upgrade -y
+RUN apt-get install -y mariadb-server
 
-# Copia la configuración personalizada y scripts de inicialización
-COPY 50-server.cnf /etc/mysql/mariadb.conf.d/
-COPY init.sql /etc/mysql/init.sql
-COPY script.sh /usr/local/bin/script.sh
-RUN chmod +x /usr/local/bin/script.sh
+COPY tools/script.sh tools/script.sh
+RUN chmod +x tools/script.sh
 
-# Crea el directorio de runtime con permisos adecuados
-RUN mkdir -p /run/mysqld && chown -R mysql:mysql /run/mysqld
-
-# Expone el puerto por defecto de MariaDB
-EXPOSE 3306
-
-CMD ["/usr/local/bin/script.sh"]
+ENTRYPOINT [ "/tools/script.sh" ]

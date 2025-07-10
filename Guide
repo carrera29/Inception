@@ -1,0 +1,36 @@
+1.  docker ps
+    # List all running containers to ensure the MariaDB container is active
+
+
+2.  make exec_mariadb
+    
+    mysql -u root
+    # Connect to the MariaDB container as root user
+
+    SHOW DATABASES;
+    SELECT User, Host FROM mysql.user;
+    SHOW GRANTS FOR 'sqluser'@'%';
+    # List all users in the MariaDB server
+
+    SHOW GRANTS FOR 'sqluser'@'%';
+    # Show privileges for the user sqluser
+
+    SHOW DATABASES;
+    # List all databases in the MariaDB server
+
+    USE my_Database;
+    SHOW TABLES;
+    # List all tables in the my_Database database
+
+
+3.  make exec_wp
+    
+    apt-get update
+    apt-get install -y iputils-ping
+    # Install ping utility in the WordPress container
+    ping mariadb
+    # Ping the MariaDB container to check connectivity
+
+    apt-get update && apt-get install -y mariadb-client
+    mysql -h mariadb -u sqluser -p
+    # (te pedirá la contraseña, que está en secrets/db_password.txt)

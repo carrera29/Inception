@@ -1,11 +1,9 @@
-FROM debian:12
+FROM debian:bullseye
 
-RUN apt-get update && \
-    apt-get install -y php-fpm php-mysqli php-curl php-gd php-xml php-mbstring php-zip php-intl php-soap php-xmlrpc php-imagick curl && \
-    rm -rf /var/lib/apt/lists/*
+RUN apt-get update -y && apt-get upgrade -y
+RUN apt-get install -y curl php php-mysql php7.4-fpm mariadb-client
 
-COPY www.conf /etc/php/8.2/fpm/pool.d/www.conf
-COPY script.sh /usr/local/bin/script.sh
-RUN chmod +x /usr/local/bin/script.sh
+COPY tools/script.sh /tools/script.sh
+RUN chmod +x tools/script.sh
 
-CMD ["/usr/local/bin/script.sh"]
+ENTRYPOINT [ "tools/script.sh" ]
