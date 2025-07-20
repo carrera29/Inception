@@ -6,8 +6,7 @@ services:
     depends_on:
       - wordpress
     ports:
-      - target: 443
-        published: 443
+      - "443:443"
     env_file:
       - .env
     volumes:
@@ -28,8 +27,6 @@ services:
       - ../secrets:/run/secrets:ro
     networks:
       - inception
-    expose:
-      - 3306
     restart: on-failure
 
   wordpress:

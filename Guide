@@ -1,5 +1,8 @@
-1.  docker ps
-    # List all running containers to ensure the MariaDB container is active
+1.  make ps
+    # Check the status of the containers
+
+2. Open https://clcarrer.42.fr
+    # Not be able to access the site via http://clcarrer.42.fr.
 
 
 2.  make exec_mariadb
@@ -30,3 +33,16 @@
     apt-get update && apt-get install -y mariadb-client
     mysql -h mariadb -u sqluser -p$(cat /run/secrets/db_password.txt)
     # Connect to the MariaDB server from the WordPress container using the sqluser credentials
+
+4. make exec_nginx
+    
+    apt-get update
+    apt-get install -y iputils-ping
+    # Install ping utility in the Nginx container
+    ping mariadb
+    # Ping the MariaDB container to check connectivity
+
+    apt-get update && apt-get install -y mariadb-client
+    mysql -h mariadb -u sqluser -p$(cat /run/secrets/db_password.txt)
+    # Connect to the MariaDB server from the Nginx container using the sqluser credentials
+
