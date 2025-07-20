@@ -3,19 +3,19 @@ services:
     build: requirements/nginx
     container_name: nginx
     image: nginx:tar
-    env_file:
-      - .env
     depends_on:
       - wordpress
     ports:
       - target: 443
         published: 443
+    env_file:
+      - .env
     volumes:
       - wordpress:/var/www/html
+      - ../secrets:/run/secrets:ro
     networks:
       - inception
-    restart:
-      on-failure
+    restart: on-failure
 
   mariadb:
     build: requirements/mariadb
@@ -23,49 +23,29 @@ services:
     image: mariadb:tar
     env_file:
       - .env
-    secrets:
-      - db_root_password
-      - db_password
-      - db_credentials
-    environment:
-      MYSQL_CREDENTIALS_FILE: /run/secrets/db_credentials
-      MYSQL_ROOT_PASSWORD_FILE: /run/secrets/db_root_password
-      MYSQL_PASSWORD_FILE: /run/secrets/db_password
     volumes:
       - db:/var/lib/mysql
+      - ../secrets:/run/secrets:ro
     networks:
       - inception
-    restart:
-      on-failure
+    expose:
+      - 3306
+    restart: on-failure
 
   wordpress:
     build: requirements/wordpress
     container_name: wordpress
     image: wordpress:tar
-    env_file:
-      - .env
-    secrets:
-      - db_root_password
-      - db_password
-      - wp_password
-      - wp_root_password
-      - wp_credentials
-      - db_credentials
-    environment:
-      MYSQL_CREDENTIALS_FILE: /run/secrets/db_credentials
-      WP_CREDENTIALS_FILE: /run/secrets/wp_credentials
-      MYSQL_ROOT_PASSWORD_FILE: /run/secrets/db_root_password
-      MYSQL_PASSWORD_FILE: /run/secrets/db_password
-      WP_ROOT_PASSWORD_FILE: /run/secrets/wp_root_password
-      WP_USER_PASSWORD_FILE: /run/secrets/wp_password
     depends_on:
       - mariadb
+    env_file:
+      - .env
     volumes:
       - wordpress:/var/www/html
+      - ../secrets:/run/secrets:ro
     networks:
       - inception
-    restart:
-      on-failure
+    restart: on-failure
 
 networks:
   inception:
@@ -80,15 +60,15 @@ volumes:
     driver: local
 
 secrets:
-  db_password:
-    file: ../secrets/db_password.txt
-  db_root_password:
-    file: ../secrets/db_root_password.txt
-  wp_password:
-    file: ../secrets/wp_password.txt
-  wp_root_password:
-    file: ../secrets/wp_root_password.txt
-  wp_credentials:
-    file: ../secrets/wp_credentials.txt
   db_credentials:
     file: ../secrets/db_credentials.txt
+  db_root_password:
+    file: ../secrets/db_root_password.txt
+  db_password:
+    file: ../secrets/db_password.txt
+  wp_credentials:   
+    file: ../secrets/wp_credentials.txt
+  wp_root_password:
+    file: ../secrets/wp_root_password.txt
+  wp_password:
+    file: ../secrets/wp_password.txt  

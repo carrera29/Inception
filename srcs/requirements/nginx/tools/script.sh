@@ -1,5 +1,7 @@
 #!/bin/bash
 
+read LOGIN DOMAIN < <(head -n 1 /run/secrets/domain.txt | tr ':' ' ')
+
 # crear fichero de configuracion de nginx
 cat <<EOF > /etc/nginx/nginx.conf
 events {}

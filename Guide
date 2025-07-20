@@ -4,19 +4,15 @@
 
 2.  make exec_mariadb
     
-    mysql -u root
-    # Connect to the MariaDB container as root user
-
-    SHOW DATABASES;
-    SELECT User, Host FROM mysql.user;
-    SHOW GRANTS FOR 'sqluser'@'%';
-    # List all users in the MariaDB server
-
-    SHOW GRANTS FOR 'sqluser'@'%';
-    # Show privileges for the user sqluser
+    mariadb -u root -p$(cat /run/secrets/db_root_password.txt)
+    # Connect to the MariaDB server as root using the password from the secret file
 
     SHOW DATABASES;
     # List all databases in the MariaDB server
+    SELECT User, Host FROM mysql.user;
+    # List all users in the MariaDB server
+    SHOW GRANTS FOR 'sqluser'@'%';
+    # List all users in the MariaDB server
 
     USE my_Database;
     SHOW TABLES;
@@ -32,5 +28,5 @@
     # Ping the MariaDB container to check connectivity
 
     apt-get update && apt-get install -y mariadb-client
-    mysql -h mariadb -u sqluser -p
-    # (te pedirá la contraseña, que está en secrets/db_password.txt)
+    mysql -h mariadb -u sqluser -p$(cat /run/secrets/db_password.txt)
+    # Connect to the MariaDB server from the WordPress container using the sqluser credentials

@@ -1,13 +1,13 @@
 #!/bin/bash
 
-MYSQL_USER=$(CAT /run/secrets/db_credentials.txt)
+MYSQL_USER=$(cat /run/secrets/db_credentials.txt)
 MYSQL_USER_PASSWORD=$(cat /run/secrets/db_password.txt)
 MYSQL_ADMIN_PASSWORD=$(cat /run/secrets/db_root_password.txt)
 WP_USER_PASSWORD=$(cat /run/secrets/wp_password.txt)
 WP_ROOT_PASSWORD=$(cat /run/secrets/wp_root_password.txt)
 
-read WP_ADMIN_USER WP_ADMIN_EMAIL   < <(head -n 1 /run/secrets/wp_credentials.txt | tr ':' ' ')
-read WP_USER WP_USER_ROLE           < <(head -n 2 /run/secrets/wp_credentials.txt | tr ':' ' ')
+read WP_ADMIN_USER WP_ADMIN_EMAIL < <(head -n 1 /run/secrets/wp_credentials.txt | tr ':' ' ')
+read WP_USER WP_USER_ROLE < <(head -n 2 /run/secrets/wp_credentials.txt | tr ':' ' ')
 
 # Download and install WordPress
 curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
