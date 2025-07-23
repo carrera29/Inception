@@ -2,7 +2,6 @@ services:
   nginx:
     build: requirements/nginx
     container_name: nginx
-    image: nginx:tar
     depends_on:
       - wordpress
     ports:
@@ -19,7 +18,6 @@ services:
   mariadb:
     build: requirements/mariadb
     container_name: mariadb
-    image: mariadb:tar
     env_file:
       - .env
     volumes:
@@ -32,7 +30,6 @@ services:
   wordpress:
     build: requirements/wordpress
     container_name: wordpress
-    image: wordpress:tar
     depends_on:
       - mariadb
     env_file:
@@ -73,9 +70,11 @@ secrets:
     file: ../secrets/db_root_password.txt
   db_password:
     file: ../secrets/db_password.txt
-  wp_credentials:   
-    file: ../secrets/wp_credentials.txt
+  wp_admin_credentials:   
+    file: ../secrets/wp_admin_credentials.txt
+  wp_user_credentials:
+    file: ../secrets/wp_user_credentials.txt
   wp_root_password:
-    file: ../secrets/wp_root_password.txt
-  wp_password:
-    file: ../secrets/wp_password.txt  
+    file: ../secrets/wp_admin_password.txt
+  wp_user_password:
+    file: ../secrets/wp_user_password.txt

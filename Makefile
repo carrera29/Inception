@@ -11,7 +11,7 @@ up:
 
 down:
 	@echo "\033[1;32mstopping and removing containers...\033[0m"
-	docker-compose -f $(DOCKER_COMPOSE) down -v
+	docker-compose -f $(DOCKER_COMPOSE) down
 
 stop:
 	@echo "\033[1;32mstopping containers...\033[0m"
