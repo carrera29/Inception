@@ -1,0 +1,50 @@
+
+# execute the script to set up nginx configuration
+make exec_nginx
+
+# check ngix configuration and ssl setup 
+# show the nginx ssl directory contents
+ls -l /etc/nginx/ssl/
+
+# check the nginx configuration for the ssl protocols
+grep ssl_protocols /etc/nginx/nginx.conf
+
+# check the nginx ssl certificate details
+openssl x509 -in /etc/nginx/ssl/inception.crt -text -noout
+
+# test the nginx server with a curl command in bash 
+curl -vk --tlsv1.3 https://clcarrer.42.fr
+
+# execute the script to set up wordpress configuration
+make exec_wp
+# check the wordpress setup
+ls -l /var/www/html
+
+# try access to https and http
+https://clcarrer.42.fr 
+http://clcarrer.42.fr
+
+# check if the docker network for inception exists
+docker network ls | grep inception
+
+# check if the wordpress container volume
+docker inspect wordpress | grep /var/www/html 
+
+
+make exec_mariadb
+
+mariadb -u root -p$(cat /run/secrets/db_root_password.txt)
+SHOW DATABASES;
+SELECT User, Host FROM mysql.user;
+SHOW GRANTS FOR 'sqluser'@'%';
+
+mariadb -u $(cat /run/secrets/db_credentials.txt) -p$(cat /run/secrets/db_password.txt)
+USE my_Database;
+SELECT user, host, db, command FROM information_schema.processlist;
+
+
+
+
+
+
+

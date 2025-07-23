@@ -10,7 +10,7 @@ services:
     env_file:
       - .env
     volumes:
-      - wordpress:/var/www/html
+      - wordpress_data:/var/www/html
       - ../secrets:/run/secrets:ro
     networks:
       - inception
@@ -23,7 +23,7 @@ services:
     env_file:
       - .env
     volumes:
-      - db:/var/lib/mysql
+      - mariadb_data:/var/lib/mysql
       - ../secrets:/run/secrets:ro
     networks:
       - inception
@@ -38,7 +38,7 @@ services:
     env_file:
       - .env
     volumes:
-      - wordpress:/var/www/html
+      - wordpress_data:/var/www/html
       - ../secrets:/run/secrets:ro
     networks:
       - inception
@@ -50,12 +50,21 @@ networks:
     driver: bridge
 
 volumes:
-  db:
-    name: db
+  mariadb_data:
+    name: mariadb_data
     driver: local
-  wordpress:
-    name: wordpress
+    # driver_opts:
+      # type: none
+      # device: /home/clcarrer/data/mysql
+      # o: bind
+
+  wordpress_data:
+    name: wordpress_data
     driver: local
+    # driver_opts:
+      # type: none
+      # device: /home/clcarrer/data/wordpress
+      # o: bind
 
 secrets:
   db_credentials:

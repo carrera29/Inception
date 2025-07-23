@@ -6,4 +6,4 @@ RUN apt-get install -y nginx openssl
 COPY tools/script.sh tools/script.sh
 RUN chmod +x tools/script.sh
 
-ENTRYPOINT [ "nginx", "-g", "daemon off;" ]
+ENTRYPOINT ["tools/script.sh"]
