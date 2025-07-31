@@ -43,8 +43,10 @@ USE my_Database;
 SELECT user, host, db, command FROM information_schema.processlist;
 
 
-
-
-
+make exec_wp
+su -s /bin/bash www-data
+wp db tables
+wp commet list
+wp user list
 
 

@@ -13,7 +13,7 @@ http {
         listen [::]:443 ssl;
 
         root /var/www/html;
-        server_name clcarrer.42.fr ;
+        server_name ${DOMAIN};
 
         index index.php;
 

@@ -9,21 +9,6 @@ WP_ADMIN_PASSWORD=$(cat /run/secrets/wp_admin_password.txt)
 read WP_ADMIN_USER WP_ADMIN_EMAIL < <(head -n 1 /run/secrets/wp_admin_credentials.txt | tr ':' ' ')
 read WP_USER WP_USER_EMAIL WP_USER_ROLE < <(head -n 1 /run/secrets/wp_user_credentials.txt | tr ':' ' ')
 
-echo "===== VARIABLES CARGADAS DESDE SECRETS ====="
-echo "MYSQL_USER: $MYSQL_USER"
-echo "WP_ADMIN_USER: $WP_ADMIN_USER"
-echo "WP_ADMIN_EMAIL: $WP_ADMIN_EMAIL"
-echo "WP_ADMIN_PASSWORD: $WP_ADMIN_PASSWORD"
-echo "WP_USER: $WP_USER"
-echo "WP_USER_EMAIL: $WP_USER_EMAIL"
-echo "WP_USER_ROLE: $WP_USER_ROLE"
-echo "WP_USER_PASSWORD: $WP_USER_PASSWORD"
-echo "WP_TITLE: $WP_TITLE"
-echo "DOMAIN: $DOMAIN"
-echo "DATABASE_NAME: $DATABASE_NAME"
-echo "MYSQL_USER_PASSWORD: $MYSQL_USER_PASSWORD"
-echo "============================================"
-
 # Download and install WordPress
 curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
 # Change permissions and move wp-cli to a directory
